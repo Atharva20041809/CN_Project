@@ -1,6 +1,6 @@
 # Private Network Service Platform
 
-A private-network web service platform built using **four physical macOS laptops on the same LAN**.
+TeamX - A private-network web service platform built using **four physical macOS laptops on the same LAN**.
 
 The project demonstrates private DNS resolution, reverse proxying, HTTPS/TLS, load balancing, backend services, HTTP caching, packet-level analysis, and failure/recovery scenarios.
 
