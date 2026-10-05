@@ -1,0 +1,12 @@
+[req]
+distinguished_name = dn
+prompt = no
+
+[dn]
+CN = app.teamX.test
+
+[v3_leaf]
+basicConstraints = critical, CA:FALSE
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = DNS:app.teamX.test, DNS:api.teamX.test
