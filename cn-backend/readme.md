@@ -9,8 +9,22 @@ This directory contains the two application servers used in the Private Network 
 
 ## Student Details
 
-* **Name:** Shubhaang Kataruka
-* **Enrollment Number:** 2401010450
+### Backend A — Mac 3
+
+* **Name:** Atharva Tiwari
+* **Enrollment Number:** 2401010113
+* **Role:** Mac 3 — Backend Server A
+* **Backend Identifier:** A
+* **Port:** 3001
+
+### Backend B — Mac 4
+
+* **Name:** Varun Sharma
+* **Enrollment Number:** 2401010497
+* **Role:** Mac 4 — Backend Server B
+* **Backend Identifier:** B
+* **Port:** 3002
+
 
 ## Network Architecture
 
