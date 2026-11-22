@@ -58,7 +58,7 @@ The dnsmasq configuration file is:
 The relevant private DNS configuration is:
 
 ```text
-address=/app.teamX.test/10.7.3.38
+10.7.3.38   app.teamX.test     # Phase 2: records live in /opt/homebrew/etc/teamx.hosts
 ```
 
 dnsmasq listens for DNS queries on port `53`.
