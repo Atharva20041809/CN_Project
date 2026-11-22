@@ -4,7 +4,7 @@ Mac 1 provides the private DNS service for the Private Network Service Platform 
 
 ## Student Details
 
-* **Name:** Tanish Yadav
+* **Name:** Tanish Roa
 * **Enrollment Number:** 2401010474
 * **Role:** Mac 1 — Private DNS Server
 * **DNS Server:** `dnsmasq`
@@ -15,7 +15,7 @@ Mac 1 provides the private DNS service for the Private Network Service Platform 
 | Property        | Value         |
 | --------------- | ------------- |
 | Machine         | Mac 1         |
-| LAN IP          | `10.7.18.206` |
+| LAN IP          | `10.7.23.138` |
 | DNS Service     | dnsmasq       |
 | DNS Port        | 53            |
 | Default Gateway | `10.7.0.1`    |
@@ -30,7 +30,7 @@ Client
    ▼
 Private DNS — Mac 1
    │
-   │ app.teamX.test → 10.7.18.80
+   │ app.teamX.test → 10.7.3.38
    ▼
 Mac 2 — nginx
    │
@@ -42,10 +42,10 @@ Mac 2 — nginx
 The private DNS record is:
 
 ```text
-app.teamX.test → 10.7.18.80
+app.teamX.test → 10.7.3.38
 ```
 
-Mac 2 (`10.7.18.80`) is the nginx reverse proxy and load balancer.
+Mac 2 (`10.7.3.38`) is the nginx reverse proxy and load balancer.
 
 ## Configuration
 
@@ -58,7 +58,7 @@ The dnsmasq configuration file is:
 The relevant private DNS configuration is:
 
 ```text
-address=/app.teamX.test/10.7.18.80
+address=/app.teamX.test/10.7.3.38
 ```
 
 dnsmasq listens for DNS queries on port `53`.
@@ -94,7 +94,7 @@ sudo lsof -nP -iUDP:53 -iTCP:53
 Mac 1 should show dnsmasq listening on:
 
 ```text
-10.7.18.206:53
+10.7.23.138:53
 ```
 
 ## DNS Testing
@@ -102,25 +102,25 @@ Mac 1 should show dnsmasq listening on:
 From Mac 1:
 
 ```bash
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 Expected result:
 
 ```text
-10.7.18.80
+10.7.3.38
 ```
 
 From another machine on the private LAN, such as Mac 3 or Mac 4:
 
 ```bash
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 Expected:
 
 ```text
-10.7.18.80
+10.7.3.38
 ```
 
 ## System DNS Configuration
@@ -136,7 +136,7 @@ networksetup -getdnsservers Wi-Fi
 Expected:
 
 ```text
-10.7.18.206
+10.7.23.138
 ```
 
 After configuring the client to use Mac 1, test normal DNS resolution:
@@ -148,7 +148,7 @@ dig app.teamX.test +short
 Expected:
 
 ```text
-10.7.18.80
+10.7.3.38
 ```
 
 Public DNS resolution should continue to work through dnsmasq's upstream DNS configuration. For example:
@@ -168,13 +168,13 @@ sudo lsof -nP -iUDP:53 -iTCP:53
 Test DNS directly against Mac 1:
 
 ```bash
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 Test connectivity to the DNS server from another machine:
 
 ```bash
-nc -vz 10.7.18.206 53
+nc -vz 10.7.23.138 53
 ```
 
 Check the client's configured DNS server:
@@ -189,7 +189,7 @@ If the private hostname does not resolve, verify that:
 2. dnsmasq is running.
 3. Port 53 is accessible.
 4. `/opt/homebrew/etc/dnsmasq.conf` contains the correct `address` record.
-5. The client is configured to use `10.7.18.206` as its DNS server.
+5. The client is configured to use `10.7.23.138` as its DNS server.
 6. The hostname resolves to the current Mac 2 IP address.
 
 ## Security

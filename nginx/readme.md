@@ -7,7 +7,7 @@ Mac 2 acts as the **reverse proxy and load balancer** for the Private Network Se
 * **Name:** Abhishek Rana
 * **Enrollment Number:** 2401010021
 * **Role:** Mac 2 — nginx Reverse Proxy / Load Balancer
-* **Server IP:** `10.7.18.80`
+* **Server IP:** `10.7.3.38`
 
 ## Network Role
 
@@ -19,7 +19,7 @@ Client
    ▼
 Private DNS — Mac 1
    │
-   │ app.teamX.test → 10.7.18.80
+   │ app.teamX.test → 10.7.3.38
    ▼
 Mac 2 — nginx
    │
@@ -42,12 +42,12 @@ nginx provides:
 | Property             | Value             |
 | -------------------- | ----------------- |
 | Machine              | Mac 2             |
-| LAN IP               | `10.7.18.80`      |
+| LAN IP               | `10.7.3.38`      |
 | Service              | nginx             |
-| HTTPS Port           | `8443`            |
+| HTTPS Port           | `443`            |
 | Application Hostname | `app.teamX.test`  |
 | Backend A            | `10.7.3.174:3001` |
-| Backend B            | `10.7.14.88:3002` |
+| Backend B            | `10.7.31.162:3002` |
 
 ## nginx Configuration
 
@@ -67,7 +67,7 @@ and proxies requests to the backend pool:
 
 ```text
 Backend A → 10.7.3.174:3001
-Backend B → 10.7.14.88:3002
+Backend B → 10.7.31.162:3002
 ```
 
 ## Load Balancing
@@ -249,7 +249,7 @@ X-Backend: A
 Backend B:
 
 ```bash
-curl -i --max-time 5 http://10.7.14.88:3002/api/status
+curl -i --max-time 5 http://10.7.31.162:3002/api/status
 ```
 
 Expected:
@@ -276,7 +276,7 @@ Backend B should remain available.
 If Backend B is stopped on Mac 4, direct requests to:
 
 ```text
-10.7.14.88:3002
+10.7.31.162:3002
 ```
 
 should fail while Backend A remains available.

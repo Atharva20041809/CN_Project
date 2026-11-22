@@ -8,10 +8,10 @@ The project consists of four machines:
 
 | Machine | Role                          | IP Address    | Service                 |
 | ------- | ----------------------------- | ------------- | ----------------------- |
-| Mac 1   | Private DNS                   | `10.7.18.206` | dnsmasq                 |
-| Mac 2   | Reverse Proxy / Load Balancer | `10.7.18.80`  | nginx                   |
+| Mac 1   | Private DNS                   | `10.7.23.138` | dnsmasq                 |
+| Mac 2   | Reverse Proxy / Load Balancer | `10.7.3.38`  | nginx                   |
 | Mac 3   | Backend A                     | `10.7.3.174`  | Node.js / Express :3001 |
-| Mac 4   | Backend B                     | `10.7.14.88`  | Node.js / Express :3002 |
+| Mac 4   | Backend B                     | `10.7.31.162`  | Node.js / Express :3002 |
 
 The request flow is:
 
@@ -21,7 +21,7 @@ Client
    ▼
 Mac 1 — Private DNS
    │
-   │ app.teamX.test → 10.7.18.80
+   │ app.teamX.test → 10.7.3.38
    ▼
 Mac 2 — nginx
    │
@@ -75,13 +75,13 @@ dns/dnsmasq.conf
 The important DNS mapping is:
 
 ```text
-app.teamX.test → 10.7.18.80
+app.teamX.test → 10.7.3.38
 ```
 
 The DNS server's IP is:
 
 ```text
-10.7.18.206
+10.7.23.138
 ```
 
 Install dnsmasq if required:
@@ -113,13 +113,13 @@ sudo lsof -nP -iUDP:53 -iTCP:53
 Test the private DNS record:
 
 ```bash
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 Expected:
 
 ```text
-10.7.18.80
+10.7.3.38
 ```
 
 ## 5. Mac 2 — nginx
@@ -136,7 +136,7 @@ The backend upstreams are:
 
 ```text
 Backend A → 10.7.3.174:3001
-Backend B → 10.7.14.88:3002
+Backend B → 10.7.31.162:3002
 ```
 
 Install nginx if required:
@@ -178,7 +178,7 @@ sudo nginx -s reload
 Certificate configuration files are stored in:
 
 ```text
-certs/
+cn-certs/
 ├── ca.cnf
 ├── leaf.cnf
 └── make-certs.sh
@@ -187,13 +187,13 @@ certs/
 Make the certificate-generation script executable:
 
 ```bash
-chmod +x certs/make-certs.sh
+chmod +x cn-certs/make-certs.sh
 ```
 
 Generate the certificates:
 
 ```bash
-./certs/make-certs.sh
+./cn-certs/make-certs.sh
 ```
 
 The generated private keys and certificate material must not be committed to Git.
@@ -202,21 +202,21 @@ Verify the server certificate against the local Root CA:
 
 ```bash
 openssl verify \
-  -CAfile certs/rootCA.pem \
-  certs/server.crt
+  -CAfile cn-certs/rootCA.pem \
+  cn-certs/server.crt
 ```
 
 Expected:
 
 ```text
-certs/server.crt: OK
+cn-certs/server.crt: OK
 ```
 
 Verify the certificate SANs:
 
 ```bash
 openssl x509 \
-  -in certs/server.crt \
+  -in cn-certs/server.crt \
   -noout \
   -subject \
   -issuer \
@@ -302,7 +302,7 @@ curl -i http://127.0.0.1:3002/api/status
 Test from another machine:
 
 ```bash
-curl -i http://10.7.14.88:3002/api/status
+curl -i http://10.7.31.162:3002/api/status
 ```
 
 Expected response:
@@ -317,7 +317,7 @@ X-Backend: B
 Clients that need to resolve the private hostname should use Mac 1 as their DNS server:
 
 ```text
-10.7.18.206
+10.7.23.138
 ```
 
 On macOS, verify the configured DNS server:
@@ -341,7 +341,7 @@ dig app.teamX.test +short
 Expected:
 
 ```text
-10.7.18.80
+10.7.3.38
 ```
 
 ## 10. End-to-End HTTPS Test
@@ -426,19 +426,19 @@ curl -i --max-time 5 http://10.7.3.174:3001/api/status
 Verify Backend B:
 
 ```bash
-curl -i --max-time 5 http://10.7.14.88:3002/api/status
+curl -i --max-time 5 http://10.7.31.162:3002/api/status
 ```
 
 From Mac 2, verify DNS:
 
 ```bash
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 Expected:
 
 ```text
-10.7.18.80
+10.7.3.38
 ```
 
 ## 14. Recommended Startup Order
@@ -458,7 +458,7 @@ brew services start dnsmasq
 Start Backend A:
 
 ```bash
-cd ~/cn-project/cn-backend
+cd cn-backend/cn-backend-a   # Backend B: cd cn-backend/cn-backend-b
 BACKEND=A PORT=3001 node server.js
 ```
 
@@ -467,7 +467,7 @@ BACKEND=A PORT=3001 node server.js
 Start Backend B:
 
 ```bash
-cd ~/cn-project/cn-backend
+cd cn-backend/cn-backend-a   # Backend B: cd cn-backend/cn-backend-b
 BACKEND=B PORT=3002 node server.js
 ```
 

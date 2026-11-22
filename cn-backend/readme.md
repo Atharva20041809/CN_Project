@@ -53,7 +53,7 @@ app.teamX.test
 The private DNS record resolves it to Mac 2:
 
 ```text
-app.teamX.test → 10.7.18.80
+app.teamX.test → 10.7.3.38
 ```
 
 ## Backend A — Mac 3
@@ -85,7 +85,7 @@ Mac 2's nginx upstream for Backend A is:
 | Property           | Value        |
 | ------------------ | ------------ |
 | Machine            | Mac 4        |
-| LAN IP             | `10.7.14.88` |
+| LAN IP             | `10.7.31.162` |
 | Backend Identifier | B            |
 | Port               | `3002`       |
 | Protocol           | HTTP         |
@@ -101,7 +101,7 @@ Backend B listens on:
 Mac 2's nginx upstream for Backend B is:
 
 ```text
-10.7.14.88:3002
+10.7.31.162:3002
 ```
 
 ## Technology
@@ -180,7 +180,7 @@ with no response body.
 On Mac 3:
 
 ```bash
-cd ~/cn-project/cn-backend
+cd cn-backend/cn-backend-a   # Backend B: cd cn-backend/cn-backend-b
 BACKEND=A PORT=3001 node server.js
 ```
 
@@ -195,7 +195,7 @@ Backend A listening on 0.0.0.0:3001
 On Mac 4:
 
 ```bash
-cd ~/cn-project/cn-backend
+cd cn-backend/cn-backend-a   # Backend B: cd cn-backend/cn-backend-b
 BACKEND=B PORT=3002 node server.js
 ```
 
@@ -253,7 +253,7 @@ X-Backend: A
 ### Test Backend B
 
 ```bash
-curl -i --max-time 5 http://10.7.14.88:3002/api/status
+curl -i --max-time 5 http://10.7.31.162:3002/api/status
 ```
 
 Expected:
@@ -357,7 +357,7 @@ Ctrl+C
 Direct access to:
 
 ```text
-http://10.7.14.88:3002/api/status
+http://10.7.31.162:3002/api/status
 ```
 
 should fail.

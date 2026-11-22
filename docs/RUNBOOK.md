@@ -6,10 +6,10 @@ This runbook provides the commands and procedures required to start, verify, dia
 
 | Machine | Role                          | IP Address    | Service       |
 | ------- | ----------------------------- | ------------- | ------------- |
-| Mac 1   | Private DNS                   | `10.7.18.206` | dnsmasq       |
-| Mac 2   | Reverse Proxy / Load Balancer | `10.7.18.80`  | nginx         |
+| Mac 1   | Private DNS                   | `10.7.23.138` | dnsmasq       |
+| Mac 2   | Reverse Proxy / Load Balancer | `10.7.3.38`  | nginx         |
 | Mac 3   | Backend A                     | `10.7.3.174`  | Node.js :3001 |
-| Mac 4   | Backend B                     | `10.7.14.88`  | Node.js :3002 |
+| Mac 4   | Backend B                     | `10.7.31.162`  | Node.js :3002 |
 
 Application:
 
@@ -49,19 +49,19 @@ sudo lsof -nP -iUDP:53 -iTCP:53
 Test:
 
 ```bash id="v5c9x3"
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 Expected:
 
 ```text id="n4b8s6"
-10.7.18.80
+10.7.3.38
 ```
 
 ### Mac 3 — Backend A
 
 ```bash id="m3s7p1"
-cd ~/cn-project/cn-backend
+cd cn-backend/cn-backend-a   # Backend B: cd cn-backend/cn-backend-b
 BACKEND=A PORT=3001 node server.js
 ```
 
@@ -80,14 +80,14 @@ X-Backend: A
 ### Mac 4 — Backend B
 
 ```bash id="h4n7w2"
-cd ~/cn-project/cn-backend
+cd cn-backend/cn-backend-a   # Backend B: cd cn-backend/cn-backend-b
 BACKEND=B PORT=3002 node server.js
 ```
 
 Verify:
 
 ```bash id="c5m9q1"
-curl -i http://10.7.14.88:3002/api/status
+curl -i http://10.7.31.162:3002/api/status
 ```
 
 Expected:
@@ -121,7 +121,7 @@ dig app.teamX.test +short
 Expected:
 
 ```text id="t6n3v9"
-10.7.18.80
+10.7.3.38
 ```
 
 Then:
@@ -159,7 +159,7 @@ sudo lsof -nP -iUDP:53 -iTCP:53
 ### Query Mac 1 directly
 
 ```bash id="c9r4w6"
-dig @10.7.18.206 app.teamX.test +short
+dig @10.7.23.138 app.teamX.test +short
 ```
 
 ### Check client DNS configuration
@@ -177,7 +177,7 @@ networksetup -getdnsservers Wi-Fi
 The client should use:
 
 ```text id="n5s9d4"
-10.7.18.206
+10.7.23.138
 ```
 
 ### If DNS fails
@@ -204,7 +204,7 @@ curl -i --max-time 5 http://10.7.3.174:3001/api/status
 ### Backend B
 
 ```bash id="w3p7k2"
-curl -i --max-time 5 http://10.7.14.88:3002/api/status
+curl -i --max-time 5 http://10.7.31.162:3002/api/status
 ```
 
 If either request fails:
@@ -286,8 +286,8 @@ Verify the certificate:
 
 ```bash id="r6x2m9"
 openssl verify \
-  -CAfile certs/rootCA.pem \
-  certs/server.crt
+  -CAfile cn-certs/rootCA.pem \
+  cn-certs/server.crt
 ```
 
 Expected:
@@ -300,7 +300,7 @@ Check certificate details:
 
 ```bash id="n8p4s6"
 openssl x509 \
-  -in certs/server.crt \
+  -in cn-certs/server.crt \
   -noout \
   -subject \
   -issuer \
@@ -419,7 +419,7 @@ Ctrl+C
 Verify direct access fails:
 
 ```bash id="a8r2m6"
-curl --max-time 5 http://10.7.14.88:3002/api/status
+curl --max-time 5 http://10.7.31.162:3002/api/status
 ```
 
 Then test through nginx.
@@ -433,7 +433,7 @@ BACKEND=B PORT=3002 node server.js
 Verify:
 
 ```bash id="m9c4q7"
-curl -i http://10.7.14.88:3002/api/status
+curl -i http://10.7.31.162:3002/api/status
 ```
 
 ## 12. IP Address Changes
