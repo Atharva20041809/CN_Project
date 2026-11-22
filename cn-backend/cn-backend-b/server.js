@@ -2,9 +2,9 @@ const express = require("express");
 
 const os = require("os");
 
-const BACKEND = process.env.BACKEND || "A";
+const BACKEND = process.env.BACKEND || "B";
 
-const PORT = Number(process.env.PORT) || 3001;
+const PORT = Number(process.env.PORT) || 3002;
 
 const app = express();
 

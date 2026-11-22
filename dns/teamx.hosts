@@ -1,0 +1,17 @@
+# TeamX project DNS records (Phase 2)
+# The SAME file goes on BOTH DNS servers:
+#   Mac 1 (primary, 10.7.23.138)  and  Mac 3 (backup, 10.7.3.174)
+# Path on each Mac: /opt/homebrew/etc/teamx.hosts   (Intel Mac: /usr/local/etc/teamx.hosts)
+#
+# After editing, reload WITHOUT restarting dnsmasq:   sudo killall -HUP dnsmasq
+#
+# --- NORMAL STATE: both names -> primary edge (Mac 2) ---
+10.7.3.38   app.teamX.test
+10.7.3.38   api.teamX.test
+
+# --- Extension B TTL demo record (safe to change: nothing serves it) ---
+# change 10.7.3.38 -> 10.7.31.162, then: sudo killall -HUP dnsmasq  (on BOTH DNS Macs)
+10.7.3.38   ttl.teamX.test
+
+# --- CUTOVER STATE (Extension B/E): comment the app line above, uncomment this ---
+# 10.7.3.174   app.teamX.test

@@ -16,7 +16,8 @@ openssl req -x509 -new -nodes \
   -sha256 \
   -days 3650 \
   -out rootCA.pem \
-  -config ca.cnf
+  -config ca.cnf \
+  -extensions v3_ca
 
 # Generate server private key
 openssl genrsa -out server.key 2048
@@ -37,7 +38,7 @@ openssl x509 -req \
   -days 825 \
   -sha256 \
   -extfile leaf.cnf \
-  -extensions req_ext
+  -extensions v3_leaf
 
 echo
 echo "Certificate generation completed."
